@@ -1,24 +1,40 @@
 const ContactsRepository = require('../repositories/ContactsRepository');
 
 class ContractController {
-  index(request, response) {
-    response.send('send fromewkms');
+  async index(request, response) {
+    const contacts = await ContactsRepository.findAll();
+
+    response.json(contacts);
   }
 
-  show() {
+  async show(request, response) {
+    const { id } = request.params;
 
+    const contact = await ContactsRepository.findById(id);
+
+    if (!contact) {
+      return response.status(404).json({ error: 'User not found' });
+    }
+
+    response.json(contact);
   }
 
-  store() {
+  store() {}
 
-  }
+  update() {}
 
-  update() {
+  async delete(request, response) {
+    const { id } = request.params;
 
-  }
+    const contact = await ContactsRepository.findById(id);
 
-  delete() {
+    if (!contact) {
+      return response.status(404).json({ error: 'User not found' });
+    }
 
+    await ContactsRepository.delete(id);
+
+    response.sendStatus(204);
   }
 }
 
